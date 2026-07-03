@@ -279,25 +279,29 @@ def scale_bounce(vals, factor):
 #   order  : wave rank per letter position (c e r e a l). Equal ranks fire together.
 #   stagger: frames between one wave and the next.
 #   beats  : frame offsets for overshoot / squash / rebound / settle within a letter.
-#   hold   : frames to rest on the finished word before the loop restarts.
 START = 6
 BEATS = (13, 22, 30, 38)
+
+# Frames kept after the final letter lands before the comp ends. Deliberately short:
+# consumers reveal on the finish callback, so a long tail here becomes a dead pause on
+# launch. The comp ends just after the last keyframe settles, not on a static wordmark.
+SETTLE = 4
 VARIANTS = {
     "classic": {
         "label": "Classic", "desc": "the original pace, letters pop left to right one after another",
-        "order": [0, 1, 2, 3, 4, 5], "stagger": 7, "beats": BEATS, "hold": 50,
+        "order": [0, 1, 2, 3, 4, 5], "stagger": 7, "beats": BEATS,
     },
     "flow": {
         "label": "Flow", "desc": "same pop speed, tighter stagger so the wave rolls through",
-        "order": [0, 1, 2, 3, 4, 5], "stagger": 5, "beats": BEATS, "hold": 46,
+        "order": [0, 1, 2, 3, 4, 5], "stagger": 5, "beats": BEATS,
     },
     "split": {
         "label": "Split", "desc": "c leads, then a and e burst in together, and r e l complete the word",
-        "order": [0, 1, 2, 3, 1, 4], "stagger": 6, "beats": BEATS, "hold": 48,
+        "order": [0, 1, 2, 3, 1, 4], "stagger": 6, "beats": BEATS,
     },
     "bloom": {
         "label": "Bloom", "desc": "ignites in the centre and blooms outward to both ends",
-        "order": [2, 1, 0, 0, 1, 2], "stagger": 6, "beats": BEATS, "hold": 48,
+        "order": [2, 1, 0, 0, 1, 2], "stagger": 6, "beats": BEATS,
     },
 }
 VARIANT_ORDER = ["classic", "flow", "split", "bloom"]
@@ -305,9 +309,11 @@ VARIANT_ORDER = ["classic", "flow", "split", "bloom"]
 
 def build_inflate(letters, key):
     cfg = VARIANTS[key]
-    order, stagger, hold = cfg["order"], cfg["stagger"], cfg["hold"]
+    order, stagger = cfg["order"], cfg["stagger"]
     b1, b2, b3, b4 = cfg["beats"]
-    op = START + max(order) * stagger + b4 + hold
+    # The last letter to fire lands its final keyframe at START + max(order)*stagger + b4;
+    # end the comp SETTLE frames after that so nothing rests on a finished-but-static word.
+    op = START + max(order) * stagger + b4 + SETTLE
     layers = []
     for idx, letter in enumerate(letters):
         t0 = START + order[idx] * stagger

@@ -79,7 +79,7 @@ struct Header: View {
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation("io.github.lujstn:cereal-logo:1.1.0")
+    implementation("io.github.lujstn:cereal-logo:1.1.1")
 }
 ```
 

@@ -1,7 +1,7 @@
 {
   "name": "cereal-logo",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "The animated Cereal logo, generated once and shipped to web, iOS and Android from a single source of truth.",
   "license": "UNLICENSED",
   "workspaces": [

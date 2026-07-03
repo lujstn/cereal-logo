@@ -1,6 +1,6 @@
 {
   "name": "@lujstn/cereal-logo-react",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Animated Cereal logo for React: a balloon-inflate Lottie wordmark with flow / split / bloom / random modes.",
   "license": "UNLICENSED",
   "author": "lujstn",
