@@ -1,0 +1,27 @@
+{
+  "name": "cereal",
+  "version": "1.0.0",
+  "fps": 60,
+  "width": 480,
+  "height": 160,
+  "modes": [
+    "flow",
+    "split",
+    "bloom"
+  ],
+  "labels": {
+    "flow": "Flow",
+    "split": "Split",
+    "bloom": "Bloom"
+  },
+  "descriptions": {
+    "flow": "same pop speed, tighter stagger so the wave rolls through",
+    "split": "c leads, then a and e burst in together, and r e l complete the word",
+    "bloom": "ignites in the centre and blooms outward to both ends"
+  },
+  "files": {
+    "flow": "cereal-inflate-flow.json",
+    "split": "cereal-inflate-split.json",
+    "bloom": "cereal-inflate-bloom.json"
+  }
+}

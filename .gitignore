@@ -1,0 +1,20 @@
+# Node
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Android / Gradle
+.gradle/
+build/
+local.properties
+
+# Logs and OS cruft
+*.log
+.DS_Store
+
+# Local-only preview
+generator/preview.html

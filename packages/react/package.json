@@ -1,0 +1,52 @@
+{
+  "name": "@lujstn/cereal-logo-react",
+  "version": "1.0.0",
+  "description": "Animated Cereal logo for React: a balloon-inflate Lottie wordmark with flow / split / bloom / random modes.",
+  "license": "UNLICENSED",
+  "author": "lujstn",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lujstn/cereal-logo.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://github.com/lujstn/cereal-logo#readme",
+  "bugs": {
+    "url": "https://github.com/lujstn/cereal-logo/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist"],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=17",
+    "react-dom": ">=17"
+  },
+  "dependencies": {
+    "lottie-react": "^2.4.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.0"
+  },
+  "keywords": ["cereal", "logo", "lottie", "animation", "react", "wordmark"],
+  "publishConfig": {
+    "access": "public"
+  }
+}

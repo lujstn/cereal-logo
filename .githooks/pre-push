@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Runs the full verification suite before anything is pushed.
+# Enable with: git config core.hooksPath .githooks
+exec bash "$(git rev-parse --show-toplevel)/scripts/test.sh"

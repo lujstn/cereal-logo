@@ -1,0 +1,19 @@
+{
+  "name": "cereal-logo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "The animated Cereal logo, generated once and shipped to web, iOS and Android from a single source of truth.",
+  "license": "UNLICENSED",
+  "workspaces": [
+    "packages/react",
+    "packages/react-native"
+  ],
+  "scripts": {
+    "generate": "python3 generator/generate_lottie.py",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "bash scripts/test.sh",
+    "sync-version": "node scripts/sync-version.mjs",
+    "version": "npm run sync-version && npm run generate && git add -A"
+  }
+}
