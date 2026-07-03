@@ -10,6 +10,7 @@ import LottieImport, { type LottieRefCurrentProps } from 'lottie-react';
 import flow from './assets/cereal-inflate-flow.json';
 import split from './assets/cereal-inflate-split.json';
 import bloom from './assets/cereal-inflate-bloom.json';
+import hapticTracks from './assets/cereal-haptics.json';
 
 // Some CJS/ESM setups deliver the module namespace instead of the default export;
 // fall back to it so the component renders under bundlers and server rendering alike.
@@ -23,6 +24,22 @@ const SOURCES: Record<CerealLogoVariant, unknown> = { flow, split, bloom };
 
 function pickRandom(): CerealLogoVariant {
   return CEREAL_LOGO_MODES[Math.floor(Math.random() * CEREAL_LOGO_MODES.length)];
+}
+
+// navigator.vibrate takes a [wait, pulse, ...] pattern and is absent on iOS Safari.
+function playVibration(variant: CerealLogoVariant, speed: number) {
+  if (typeof navigator === 'undefined' || typeof navigator.vibrate !== 'function') return;
+  const track = hapticTracks[variant];
+  if (!track || track.events.length === 0) return;
+  const rate = speed > 0 ? speed : 1;
+  const pattern: number[] = [0];
+  let prevEnd = 0;
+  for (const event of track.events) {
+    const at = Math.max(0, Math.round((event.t / rate) * 1000));
+    pattern.push(Math.max(0, at - prevEnd), 15);
+    prevEnd = at + 15;
+  }
+  navigator.vibrate(pattern);
 }
 
 function usePrefersReducedMotion(): boolean {
@@ -44,6 +61,7 @@ export interface CerealLogoProps {
   autoplay?: boolean;
   speed?: number;
   respectReducedMotion?: boolean;
+  haptics?: boolean;
   title?: string;
   className?: string;
   style?: CSSProperties;
@@ -56,6 +74,7 @@ export function CerealLogo({
   autoplay = true,
   speed = 1,
   respectReducedMotion = true,
+  haptics = false,
   title = 'Cereal',
   className,
   style,
@@ -67,6 +86,17 @@ export function CerealLogo({
   );
   const reduced = usePrefersReducedMotion() && respectReducedMotion;
   const ref = useRef<LottieRefCurrentProps>(null);
+
+  useEffect(() => {
+    if (!haptics) return;
+    const prefersReduced =
+      typeof window !== 'undefined' &&
+      !!window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (respectReducedMotion && prefersReduced) return;
+    playVibration(variant, speed);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const apply = () => {
     const item = ref.current;

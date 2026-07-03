@@ -10,7 +10,7 @@ version = providers.gradleProperty("VERSION").get()
 
 android {
     namespace = "com.lujstn.cereal.logo"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 21
@@ -25,10 +25,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
     publishing {
         singleVariant("release") {
             withSourcesJar()
@@ -36,10 +32,16 @@ android {
     }
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
+}
+
 dependencies {
-    implementation(platform("androidx.compose:compose-bom:2024.09.00"))
+    implementation(platform("androidx.compose:compose-bom:2026.06.01"))
     implementation("androidx.compose.foundation:foundation")
-    implementation("com.airbnb.android:lottie-compose:6.5.2")
+    implementation("com.airbnb.android:lottie-compose:6.6.6")
 }
 
 afterEvaluate {

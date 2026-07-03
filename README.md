@@ -79,7 +79,7 @@ struct Header: View {
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation("io.github.lujstn:cereal-logo:1.0.0")
+    implementation("io.github.lujstn:cereal-logo:1.1.0")
 }
 ```
 
@@ -101,7 +101,19 @@ Every platform accepts the same options (names follow each platform's convention
 - **mode**: `flow` | `split` | `bloom` | `random`. Defaults to `random`, resolved once per mount so it does not re-pick on redraw.
 - **loop**: repeat, or play once (the default).
 - **speed**: playback multiplier, default `1`.
-- **reduced motion**: on by default, so when the OS requests reduced motion the component shows the finished word without animating. Opt out with `respectReducedMotion = false`.
+- **haptics**: a short melodic tap sequence timed to the letters, off by default. Opt in with `haptics = true`.
+- **reduced motion**: on by default, so when the OS requests reduced motion the component shows the finished word without animating (and stays silent). Opt out with `respectReducedMotion = false`.
+
+## Haptics
+
+Each mode plays a little rhythm as its letters pop, timed from the same source as the
+animation so the taps stay in sync. `flow` rolls up a scale, `split` accents the
+`a`+`e` chord, `bloom` is three rising chords. Fidelity follows the platform: iOS uses
+Core Haptics with per-tap intensity and sharpness; Android uses the vibrator (the
+library adds the `VIBRATE` permission); web and React Native fall back to the coarser
+Vibration API and no-op where it is unsupported (for example iOS Safari). Haptics are off
+by default; when enabled they fire once as the animation starts, never on loop repeats,
+and are suppressed under reduced motion.
 
 ## Repository layout
 

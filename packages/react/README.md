@@ -29,6 +29,7 @@ export function Header() {
 | `autoplay` | `boolean` | `true` | |
 | `speed` | `number` | `1` | playback multiplier |
 | `respectReducedMotion` | `boolean` | `true` | show the finished word, unanimated, when the OS asks for reduced motion |
+| `haptics` | `boolean` | `false` | melodic tap sequence via the Web Vibration API (no-op where unsupported, e.g. iOS Safari) |
 | `title` | `string` | `'Cereal'` | accessible name (`role="img"` + `aria-label`) |
 | `className` | `string` | | |
 | `style` | `CSSProperties` | | size the logo here |

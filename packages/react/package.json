@@ -1,6 +1,6 @@
 {
   "name": "@lujstn/cereal-logo-react",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Animated Cereal logo for React: a balloon-inflate Lottie wordmark with flow / split / bloom / random modes.",
   "license": "UNLICENSED",
   "author": "lujstn",
@@ -39,11 +39,11 @@
     "lottie-react": "^2.4.0"
   },
   "devDependencies": {
-    "@types/react": "^18.3.0",
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0",
-    "tsup": "^8.3.0",
-    "typescript": "^5.6.0"
+    "@types/react": "^19.2.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.0"
   },
   "keywords": ["cereal", "logo", "lottie", "animation", "react", "wordmark"],
   "publishConfig": {

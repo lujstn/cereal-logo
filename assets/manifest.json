@@ -1,6 +1,6 @@
 {
   "name": "cereal",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "fps": 60,
   "width": 480,
   "height": 160,
@@ -23,5 +23,92 @@
     "flow": "cereal-inflate-flow.json",
     "split": "cereal-inflate-split.json",
     "bloom": "cereal-inflate-bloom.json"
+  },
+  "haptics": {
+    "flow": {
+      "duration": 0.75,
+      "events": [
+        {
+          "t": 0.2333,
+          "intensity": 0.65,
+          "sharpness": 0.4
+        },
+        {
+          "t": 0.3167,
+          "intensity": 0.65,
+          "sharpness": 0.5
+        },
+        {
+          "t": 0.4,
+          "intensity": 0.65,
+          "sharpness": 0.6
+        },
+        {
+          "t": 0.4833,
+          "intensity": 0.65,
+          "sharpness": 0.7
+        },
+        {
+          "t": 0.5667,
+          "intensity": 0.65,
+          "sharpness": 0.8
+        },
+        {
+          "t": 0.65,
+          "intensity": 0.8,
+          "sharpness": 0.9
+        }
+      ]
+    },
+    "split": {
+      "duration": 0.7333,
+      "events": [
+        {
+          "t": 0.2333,
+          "intensity": 0.65,
+          "sharpness": 0.4
+        },
+        {
+          "t": 0.3333,
+          "intensity": 0.85,
+          "sharpness": 0.525
+        },
+        {
+          "t": 0.4333,
+          "intensity": 0.65,
+          "sharpness": 0.65
+        },
+        {
+          "t": 0.5333,
+          "intensity": 0.65,
+          "sharpness": 0.775
+        },
+        {
+          "t": 0.6333,
+          "intensity": 0.8,
+          "sharpness": 0.9
+        }
+      ]
+    },
+    "bloom": {
+      "duration": 0.5333,
+      "events": [
+        {
+          "t": 0.2333,
+          "intensity": 0.85,
+          "sharpness": 0.4
+        },
+        {
+          "t": 0.3333,
+          "intensity": 0.85,
+          "sharpness": 0.65
+        },
+        {
+          "t": 0.4333,
+          "intensity": 1.0,
+          "sharpness": 0.9
+        }
+      ]
+    }
   }
 }

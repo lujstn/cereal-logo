@@ -6,15 +6,15 @@ import PackageDescription
 let package = Package(
     name: "CerealLogo",
     platforms: [
-        .iOS(.v13),
-        .tvOS(.v13),
+        .iOS(.v14),
+        .tvOS(.v14),
         .macOS(.v12),
     ],
     products: [
         .library(name: "CerealLogo", targets: ["CerealLogo"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.5.0"),
+        .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.6.0"),
     ],
     targets: [
         .target(

@@ -27,7 +27,7 @@ dependencyResolutionManagement {
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation("io.github.lujstn:cereal-logo:1.0.0")
+    implementation("io.github.lujstn:cereal-logo:1.1.0")
 }
 ```
 
@@ -56,8 +56,11 @@ fun CerealLogo(
     loop: Boolean = false,
     speed: Float = 1f,
     respectReducedMotion: Boolean = true,   // freeze on the finished word when animator scale is 0
+    haptics: Boolean = false,                // melodic vibration sequence timed to the letters
     contentDescription: String = "Cereal",  // accessibility label (TalkBack reads this)
 )
+
+// The library declares the VIBRATE permission, which merges into your app's manifest.
 ```
 
 `random` is resolved once per composition, so it does not re-pick on recomposition.

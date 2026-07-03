@@ -36,6 +36,9 @@ INK = [0.2, 0.2, 0.2, 1]  # #333333
 
 LETTER_NAMES = ["C", "e1", "r", "e2", "a", "l"]
 
+# Frames after a letter starts inflating that its haptic tap lands (near the pop peak).
+HAPTIC_LAND = 8
+
 
 # ---------------------------------------------------------------- SVG parsing
 
@@ -539,8 +542,41 @@ select(order[0]);
 """
 
 
+def build_haptics(mode):
+    # One tap per letter pop; letters that fire together merge into one stronger tap.
+    cfg = VARIANTS[mode]
+    order, stagger = cfg["order"], cfg["stagger"]
+    chord_at = {}
+    for idx in range(len(order)):
+        t0 = START + order[idx] * stagger
+        chord_at[t0] = chord_at.get(t0, 0) + 1
+    times = sorted(chord_at)
+    events = []
+    for j, t0 in enumerate(times):
+        chord = chord_at[t0]
+        frac = j / (len(times) - 1) if len(times) > 1 else 0.5
+        intensity = min(1.0, 0.65 + 0.2 * (chord - 1) + (0.15 if j == len(times) - 1 else 0))
+        sharpness = 0.4 + 0.5 * frac
+        events.append({
+            "t": round((t0 + HAPTIC_LAND) / FPS, 4),
+            "intensity": round(intensity, 3),
+            "sharpness": round(sharpness, 3),
+        })
+    duration = round((max(times) + HAPTIC_LAND + 6) / FPS, 4)
+    return {"duration": duration, "events": events}
+
+
 def asset_name(mode, sep="-"):
     return f"cereal-inflate-{mode}.json".replace("-", sep)
+
+
+def haptics_targets():
+    return [
+        PACKAGES / "react" / "src" / "assets" / "cereal-haptics.json",
+        PACKAGES / "react-native" / "src" / "assets" / "cereal-haptics.json",
+        PACKAGES / "apple" / "Sources" / "CerealLogo" / "Resources" / "cereal-haptics.json",
+        PACKAGES / "android" / "src" / "main" / "res" / "raw" / "cereal_haptics.json",
+    ]
 
 
 # Where each published take is copied. Android raw resources require
@@ -573,6 +609,8 @@ def main():
         (ASSETS / f"cereal-inflate-{key}.json").write_text(blob)
     print(f"assets/ : {', '.join(VARIANT_ORDER)}")
 
+    haptics = {m: build_haptics(m) for m in PUBLISHED_MODES}
+
     manifest = {
         "name": "cereal",
         "version": VERSION,
@@ -583,9 +621,17 @@ def main():
         "labels": {m: VARIANTS[m]["label"] for m in PUBLISHED_MODES},
         "descriptions": {m: VARIANTS[m]["desc"] for m in PUBLISHED_MODES},
         "files": {m: asset_name(m) for m in PUBLISHED_MODES},
+        "haptics": haptics,
     }
     (ASSETS / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
     print("assets/manifest.json")
+
+    haptics_blob = json.dumps(haptics, separators=(",", ":"))
+    (ASSETS / "cereal-haptics.json").write_text(haptics_blob)
+    for dest in haptics_targets():
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(haptics_blob)
+    print("assets/cereal-haptics.json (+ synced into packages)")
 
     for mode in PUBLISHED_MODES:
         blob = json.dumps(docs[mode], separators=(",", ":"))

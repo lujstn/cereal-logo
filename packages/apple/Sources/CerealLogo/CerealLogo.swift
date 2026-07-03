@@ -1,6 +1,10 @@
 import Lottie
 import SwiftUI
 
+#if os(iOS)
+import CoreHaptics
+#endif
+
 public enum CerealLogoVariant: String, CaseIterable, Sendable {
     case flow
     case split
@@ -31,6 +35,7 @@ public struct CerealLogo: View {
     private let loop: Bool
     private let speed: CGFloat
     private let respectReducedMotion: Bool
+    private let haptics: Bool
     private let title: String
     private let onFinish: ((Bool) -> Void)?
 
@@ -41,6 +46,7 @@ public struct CerealLogo: View {
         loop: Bool = false,
         speed: CGFloat = 1,
         respectReducedMotion: Bool = true,
+        haptics: Bool = false,
         title: String = "Cereal",
         onFinish: ((Bool) -> Void)? = nil
     ) {
@@ -48,15 +54,18 @@ public struct CerealLogo: View {
         self.loop = loop
         self.speed = speed
         self.respectReducedMotion = respectReducedMotion
+        self.haptics = haptics
         self.title = title
         self.onFinish = onFinish
     }
+
+    private var still: Bool { respectReducedMotion && reduceMotion }
 
     public var body: some View {
         let animation = LottieAnimation.named(variant.resourceName, bundle: .module)
 
         return Group {
-            if respectReducedMotion, reduceMotion {
+            if still {
                 LottieView(animation: animation)
                     .currentProgress(1)
                     .resizable()
@@ -71,5 +80,73 @@ public struct CerealLogo: View {
         .accessibilityElement()
         .accessibilityLabel(Text(title))
         .accessibilityAddTraits(.isImage)
+        .onAppear {
+            #if os(iOS)
+            if haptics, !still {
+                CerealHaptics.shared.play(variant, speed: speed)
+            }
+            #endif
+        }
     }
 }
+
+#if os(iOS)
+private struct HapticTrack: Decodable {
+    struct Event: Decodable {
+        let t: Double
+        let intensity: Double
+        let sharpness: Double
+    }
+    let events: [Event]
+}
+
+final class CerealHaptics {
+    static let shared = CerealHaptics()
+
+    private var engine: CHHapticEngine?
+    private lazy var tracks = Self.load()
+
+    private init() {}
+
+    func play(_ variant: CerealLogoVariant, speed: CGFloat) {
+        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics,
+              let track = tracks[variant.rawValue], !track.events.isEmpty else { return }
+        let rate = speed > 0 ? Double(speed) : 1
+        let events = track.events.map { event in
+            CHHapticEvent(
+                eventType: .hapticTransient,
+                parameters: [
+                    CHHapticEventParameter(parameterID: .hapticIntensity, value: Float(event.intensity)),
+                    CHHapticEventParameter(parameterID: .hapticSharpness, value: Float(event.sharpness)),
+                ],
+                relativeTime: event.t / rate
+            )
+        }
+        do {
+            let engine = try runningEngine()
+            let pattern = try CHHapticPattern(events: events, parameters: [])
+            try engine.makePlayer(with: pattern).start(atTime: CHHapticTimeImmediate)
+        } catch {
+            // Haptics are non-essential; a failure should never affect the logo.
+        }
+    }
+
+    private func runningEngine() throws -> CHHapticEngine {
+        if let engine { return engine }
+        let engine = try CHHapticEngine()
+        engine.isAutoShutdownEnabled = true
+        engine.resetHandler = { [weak self] in try? self?.engine?.start() }
+        try engine.start()
+        self.engine = engine
+        return engine
+    }
+
+    private static func load() -> [String: HapticTrack] {
+        guard let url = Bundle.module.url(forResource: "cereal-haptics", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let tracks = try? JSONDecoder().decode([String: HapticTrack].self, from: data)
+        else { return [:] }
+        return tracks
+    }
+}
+#endif

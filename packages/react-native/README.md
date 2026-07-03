@@ -31,6 +31,7 @@ export function Header() {
 | `autoPlay` | `boolean` | `true` | |
 | `speed` | `number` | `1` | playback multiplier |
 | `respectReducedMotion` | `boolean` | `true` | freeze on the finished word when the OS asks for reduced motion |
+| `haptics` | `boolean` | `false` | melodic tap sequence via the built-in `Vibration` API (timing honoured on Android; fixed pulses on iOS) |
 | `title` | `string` | `'Cereal'` | accessible name (wrapper `accessibilityRole="image"` + `accessibilityLabel`) |
 | `style` | `StyleProp<ViewStyle>` | | size the logo here |
 | `onAnimationFinish` | `(cancelled: boolean) => void` | | fires when a non-looping play ends |

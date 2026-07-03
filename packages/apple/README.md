@@ -40,6 +40,7 @@ CerealLogo(
     loop: Bool = false,
     speed: CGFloat = 1,
     respectReducedMotion: Bool = true,  // show the finished word, unanimated, under Reduce Motion
+    haptics: Bool = false,               // melodic Core Haptics tap sequence timed to the letters
     title: String = "Cereal",           // accessibility label (VoiceOver reads this)
     onFinish: ((Bool) -> Void)? = nil   // called when a non-looping play ends
 )

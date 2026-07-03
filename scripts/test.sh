@@ -27,8 +27,11 @@ node scripts/smoke-react.mjs
 echo "==> React Native: typecheck"
 npm run typecheck --workspace @lujstn/cereal-logo-react-native >/dev/null
 
-echo "==> SwiftUI: build"
-swift build >/dev/null
+echo "==> SwiftUI: build for iOS"
+# Build for the real iOS target, not the host: the macOS slice skips the
+# CoreHaptics code and misses iOS-only availability errors.
+xcodebuild -scheme CerealLogo -destination 'generic/platform=iOS' \
+  -skipPackagePluginValidation build -quiet
 
 if [ "${SKIP_ANDROID:-0}" != "1" ]; then
   echo "==> Android: assembleRelease"
