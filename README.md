@@ -74,6 +74,13 @@ struct Header: View {
 }
 ```
 
+Pass `colour: .light` to ink the wordmark for a dark surface (the default is `.dark`, the native charcoal):
+
+```swift
+CerealLogo(.split, colour: .light)
+    .frame(width: 240)
+```
+
 ### Android (Compose)
 
 ```kotlin
@@ -99,6 +106,7 @@ CerealLogo(
 Every platform accepts the same options (names follow each platform's convention):
 
 - **mode**: `flow` | `split` | `bloom` | `random`. Defaults to `random`, resolved once per mount so it does not re-pick on redraw.
+- **colour** (Apple only for now): `dark` (default) | `light`. The ink the wordmark is drawn in — its native charcoal for a light surface, or a soft cool white for a dark one, recoloured at render time so the animation is untouched.
 - **loop**: repeat, or play once (the default).
 - **speed**: playback multiplier, default `1`.
 - **haptics**: a short melodic tap sequence timed to the letters, off by default. Opt in with `haptics = true`.

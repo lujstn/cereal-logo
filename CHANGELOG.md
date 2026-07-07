@@ -4,6 +4,16 @@ All notable changes to this project are documented here. Versions follow
 [semantic versioning](https://semver.org/), and the root `package.json` version is the
 single source of truth that propagates to every platform package.
 
+## [1.2.0] - 2026-07-07
+
+### Added
+
+- A `colour` option on the Apple/SwiftUI component: `.dark` (the default, the artwork's native
+  charcoal, unchanged from earlier versions) or `.light` (a soft cool white for placing the wordmark
+  on a dark surface). The light ink is applied through a Lottie colour value provider, so it recolours
+  at render time and the inflate animation and its melodic haptics run untouched. The other platforms
+  keep their existing behaviour for now.
+
 ## [1.1.1] - 2026-07-03
 
 ### Changed

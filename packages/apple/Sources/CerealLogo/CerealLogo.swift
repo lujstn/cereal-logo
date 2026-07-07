@@ -29,9 +29,18 @@ public enum CerealLogoMode: Sendable {
     }
 }
 
+/// Which ink the wordmark is drawn in, so it stays legible on either surface.
+public enum CerealLogoColour: Sendable {
+    /// The artwork's native charcoal, for a light surface. The default; unchanged from earlier versions.
+    case dark
+    /// A soft cool white, for placing the wordmark on a dark surface.
+    case light
+}
+
 public struct CerealLogo: View {
     // @State so a random pick is resolved once per view identity, not on every redraw.
     @State private var variant: CerealLogoVariant
+    private let colour: CerealLogoColour
     private let loop: Bool
     private let speed: CGFloat
     private let respectReducedMotion: Bool
@@ -43,6 +52,7 @@ public struct CerealLogo: View {
 
     public init(
         _ mode: CerealLogoMode = .random,
+        colour: CerealLogoColour = .dark,
         loop: Bool = false,
         speed: CGFloat = 1,
         respectReducedMotion: Bool = true,
@@ -51,6 +61,7 @@ public struct CerealLogo: View {
         onFinish: ((Bool) -> Void)? = nil
     ) {
         _variant = State(initialValue: mode.resolved())
+        self.colour = colour
         self.loop = loop
         self.speed = speed
         self.respectReducedMotion = respectReducedMotion
@@ -62,15 +73,15 @@ public struct CerealLogo: View {
     private var still: Bool { respectReducedMotion && reduceMotion }
 
     public var body: some View {
-        let animation = LottieAnimation.named(variant.resourceName, bundle: .module)
+        let base = inkedLogo(LottieAnimation.named(variant.resourceName, bundle: .module))
 
         return Group {
             if still {
-                LottieView(animation: animation)
+                base
                     .currentProgress(1)
                     .resizable()
             } else {
-                LottieView(animation: animation)
+                base
                     .animationSpeed(speed)
                     .playing(loopMode: loop ? .loop : .playOnce)
                     .animationDidFinish { completed in onFinish?(completed) }
@@ -86,6 +97,22 @@ public struct CerealLogo: View {
                 CerealHaptics.shared.play(variant, speed: speed)
             }
             #endif
+        }
+    }
+
+    /// The animation view with the requested ink applied. `.dark` keeps the artwork's own charcoal; `.light`
+    /// overrides every letter fill via a Lottie value provider, which recolours at render time so the inflate
+    /// and its haptics are untouched (a mask or SwiftUI colour filter would rasterise the animation instead).
+    private func inkedLogo(_ animation: LottieAnimation?) -> LottieView<EmptyView> {
+        let view = LottieView(animation: animation)
+        switch colour {
+        case .dark:
+            return view
+        case .light:
+            return view.valueProvider(
+                ColorValueProvider(LottieColor(r: 0.93, g: 0.94, b: 0.97, a: 1)),
+                for: AnimationKeypath(keypath: "**.Color")
+            )
         }
     }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@lujstn/cereal-logo-react-native",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Animated Cereal logo for React Native: a balloon-inflate Lottie wordmark with flow / split / bloom / random modes.",
   "license": "UNLICENSED",
   "author": "lujstn",
